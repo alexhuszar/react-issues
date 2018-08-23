@@ -1,0 +1,6 @@
+
+.errorBounding {
+  display: flex;
+  flex: auto;
+  text-align: center;
+}
