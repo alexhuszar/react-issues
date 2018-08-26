@@ -4,31 +4,35 @@
 import React, {Component, PropTypes} from 'lib'
 import { Table } from 'semantic-ui-react'
 
+import HeaderCell from './HeaderCell';
+import TableRow from './TableRow';
 
-// import { someFunction } from 'lib/utils'
+// import styles from './index.css'
 
-// import CssTransition from 'components/CssTransition'
-// import ChildComponent1 from './childComponent1'
-// import ChildComponent2 from './childComponent2'
+import columns from 'scripts/list/issue-table-columns'
+import { ASCENDING } from 'constants/sort-by'
 
-import styles from './index.css'
-
-// import { } from 'actions/'
-// import { } from 'selectors/'
-
+import sortArray from 'lib/sort-array';
 
 /**
  * IssuesTable
  */
-export default class Index extends Component {
+export default class IssuesTable extends Component {
 
-  static propTypes = {};
+  /**
+   *
+   * @type {{issues: Issue[]}}
+   */
+  static propTypes = {
+    issues: PropTypes.arrayOf(PropTypes.object)
+  };
 
-  // /**
-  //  * Reset local state
-  //  */
-  // resetLocalState() {
-  // }
+  state = {
+    sortBy: {
+      columnName: null,
+      direction: null,
+    }
+  };
 
   /**
    * Render the component
@@ -37,28 +41,57 @@ export default class Index extends Component {
    */
   render() {
 
-    // const {  } = this.props;
+    const { issues } = this.props;
+    const { sortBy } = this.state;
+    const sortedIssues = sortArray(
+      issues, sortBy.columnName, sortBy.direction === ASCENDING ? 1 : -1
+    );
 
     return (
-      <Table className={styles.issueTable}>
+      <Table sortable>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell />
-            <Table.HeaderCell>Name</Table.HeaderCell>
-            <Table.HeaderCell>Registration Date</Table.HeaderCell>
-            <Table.HeaderCell>E-mail address</Table.HeaderCell>
-            <Table.HeaderCell>Premium Plan</Table.HeaderCell>
+            {
+              (columns || []).map((column) => (
+                <HeaderCell
+                  key={`header_${column.name}`}
+                  column={column}
+                  sortBy={sortBy}
+                  onSort={this.handleSort}
+                />
+              ))
+            }
           </Table.Row>
         </Table.Header>
+
+        <Table.Body>
+          {
+            (sortedIssues || []).map((issue) => (
+              <TableRow
+                key={`issue_${issue.id}`}
+                issue={issue}
+                columns={columns}
+              />
+            ))
+          }
+        </Table.Body>
 
       </Table>
     )
   }
 
-  // /**
-  //  * Handle input click
-  //  */
-  // handleClick(event) {
-  // }
+  /**
+   * Handle sort
+   * @param {String} columnName
+   * @param {Number} direction
+   */
+  handleSort({columnName, direction}) {
+    this.setState({
+      sortBy: {
+        columnName,
+        direction
+      }
+    })
+  }
 
 }

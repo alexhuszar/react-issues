@@ -1,7 +1,7 @@
 /**
  * Created by Alexandru Huszar on 8/22/2018.
  */
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 
 import Component from './Component'
@@ -9,7 +9,8 @@ import Component from './Component'
 export {
   React,
   PropTypes,
-  Component
+  Component,
+  Fragment
 };
 
 export default React;

@@ -7,10 +7,13 @@ import { Loader } from 'semantic-ui-react'
 import GenericError from  'components/GenericError'
 
 import IssuesTable from './IssuesTable'
+import IssuesFilter from './IssuesFilter'
 
-import styles from './index.css'
+import './index.css'
 
-import { fetchIssues}  from 'actions/issues'
+import { fetchIssues }  from 'actions/issues'
+
+import filterBySearch from 'lib/filter-by-search'
 
 /**
  * Issues
@@ -30,6 +33,7 @@ export default class Issues extends Component {
     this.state = {
       loading: false,
       issues: [],
+      searchText: '',
       error: null
     }
   }
@@ -40,9 +44,14 @@ export default class Issues extends Component {
   componentDidMount() {
     this.setState({loading: true});
       fetchIssues()
-      .then((response) =>
-        this.setState({
-          issues: response
+      .then((response) => this.setState({
+          // only save needed attributes
+          issues: response.map((issue) => {
+            return {
+              ...issue,
+              searchValues: `${issue.title} ${issue.state}`
+            }
+          })
         })
       )
       .catch((error) =>  this.setState({
@@ -58,13 +67,23 @@ export default class Issues extends Component {
    */
   render() {
 
-    const { issues, error, loading } = this.state;
+    const { issues = [], error, loading, searchText } = this.state;
+
+    debugger;
+
+    const filteredIssues = searchText
+      ? filterBySearch(issues, 'searchValues', searchText)
+      : issues;
 
     return (
-      <div className={styles.issues}>
+      <div className="issues-wrap">
         <Loader active={loading}/>
         <GenericError error={error} onDismiss={this.handleDismiss}/>
-        <IssuesTable issues={issues} />
+        <IssuesFilter
+          searchText={searchText}
+          onSearchChange={this.handleSearch}
+        />
+        <IssuesTable issues={filteredIssues} />
       </div>
     )
   }
@@ -74,6 +93,16 @@ export default class Issues extends Component {
    */
   handleDismiss() {
     this.setState({error: null})
+  }
+
+  /**
+   * Handle search text change
+   * @param {String} value
+   */
+  handleSearch(value){
+    this.setState({
+      searchText : value
+    })
   }
 
 }

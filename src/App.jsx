@@ -20,6 +20,7 @@ export default class App extends Component {
    */
   render() {
     // wrapper
+    // TODO add REACT-REDUX
     return (
       <Container>
         <ErrorBounding>
