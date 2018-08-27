@@ -2,9 +2,11 @@
  * Created by Alexandru Huszar on 8/26/2018.
  */
 import React, {Component, PropTypes} from 'lib'
-import { Divider, Input } from 'semantic-ui-react'
+import { Header, Input } from 'semantic-ui-react'
 
-import styles from './index.css'
+import AddIssue from '../AddIssue'
+
+import './index.css'
 
 /**
  * IssuesFilter
@@ -12,7 +14,8 @@ import styles from './index.css'
 export default class IssuesFilter extends Component {
 
   static propTypes = {
-    onSearchChange: PropTypes.func
+    onSearchChange: PropTypes.func,
+    onAddIssue: PropTypes.func
   };
 
   /**
@@ -25,14 +28,16 @@ export default class IssuesFilter extends Component {
     const { searchText } = this.props;
 
     return (
-      <div className={styles.issuesFilter}>
-        <Input
-          placeholder='Search...'
-          value={searchText}
-          onChange={this.handleSearchChange}
-          icon='search'
-        />
-        <Divider />
+      <div  className="issues-filter-wrap">
+        <Header.Subheader >
+          <Input
+            placeholder='Search...'
+            value={searchText}
+            onChange={this.handleSearchChange}
+            icon='search'
+          />
+          <AddIssue onCreate={this.handleAddIssue}/>
+        </Header.Subheader>
       </div>
     )
   }
@@ -42,6 +47,13 @@ export default class IssuesFilter extends Component {
    */
   handleSearchChange(event, {value}) {
     this.props.onSearchChange(value)
+  }
+
+  /**
+   * Handle input click
+   */
+  handleAddIssue(issue) {
+    this.props.onAddIssue(issue)
   }
 
 }

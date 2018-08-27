@@ -4,8 +4,6 @@
 import React, {Component} from 'lib'
 import { Container } from 'semantic-ui-react'
 
-import ErrorBounding from 'components/ErrorBounding';
-
 import Issues from 'containers/Issues'
 
 /**
@@ -23,9 +21,7 @@ export default class App extends Component {
     // TODO add REACT-REDUX
     return (
       <Container>
-        <ErrorBounding>
-          <Issues />
-        </ErrorBounding>
+        <Issues />
       </Container>
 
     )

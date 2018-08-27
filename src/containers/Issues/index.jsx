@@ -2,8 +2,9 @@
  * Created by Alexandru Huszar on 8/22/2018.
  */
 import React, { Component } from 'lib'
-import { Loader } from 'semantic-ui-react'
+import { Loader, Header } from 'semantic-ui-react'
 
+import ErrorBounding from 'components/ErrorBounding';
 import GenericError from  'components/GenericError'
 
 import IssuesTable from './IssuesTable'
@@ -14,6 +15,20 @@ import './index.css'
 import { fetchIssues }  from 'actions/issues'
 
 import filterBySearch from 'lib/filter-by-search'
+
+/**
+ * Generate labels names
+ * @param {Label[]} labels
+ * @returns {string}
+ */
+const getLabelsName = (labels) => {
+  let labelsStr = '';
+  (labels || []).map((label) => {
+    labelsStr += ` ${label.name}`
+  });
+  console.log(labelsStr)
+  return labelsStr;
+};
 
 /**
  * Issues
@@ -47,9 +62,10 @@ export default class Issues extends Component {
       .then((response) => this.setState({
           // only save needed attributes
           issues: response.map((issue) => {
+            const labelNames = getLabelsName(issue.labels);
             return {
               ...issue,
-              searchValues: `${issue.title} ${issue.state}`
+              searchValues: `${issue.title} ${labelNames} ${issue.state}`
             }
           })
         })
@@ -69,21 +85,28 @@ export default class Issues extends Component {
 
     const { issues = [], error, loading, searchText } = this.state;
 
-    debugger;
-
     const filteredIssues = searchText
       ? filterBySearch(issues, 'searchValues', searchText)
       : issues;
 
     return (
       <div className="issues-wrap">
-        <Loader active={loading}/>
-        <GenericError error={error} onDismiss={this.handleDismiss}/>
-        <IssuesFilter
-          searchText={searchText}
-          onSearchChange={this.handleSearch}
-        />
-        <IssuesTable issues={filteredIssues} />
+        <Loader active={loading} />
+        <GenericError error={error} onDismiss={this.handleDismiss} />
+
+        <Header as='h3' dividing>
+          React issues
+          <ErrorBounding >
+            <IssuesFilter
+              searchText={searchText}
+              onSearchChange={this.handleSearch}
+            />
+          </ErrorBounding>
+        </Header>
+
+        <ErrorBounding>
+          <IssuesTable issues={filteredIssues} />
+        </ErrorBounding>
       </div>
     )
   }

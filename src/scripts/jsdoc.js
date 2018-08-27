@@ -15,17 +15,6 @@
 
 /**
  * @typedef {{
- *  url: String,
- *  repository_url: String,
- *  labels_url: String,
- *  comments_url: String,
- *  events_url: String,
- *  html_url: String,
- *  id: String,
- *  node_id: String,
- *  number: Number,
- *  title: String,
- *  user: {
  *    login: String,
  *    id: String,
  *    node_id: String,
@@ -44,15 +33,34 @@
  *    received_events_url: String,
  *    type: String,
  *    site_admin: Boolean
- *  },
- *  labels: [{
+ *  }} User
+ */
+
+/**
+ * typedef {{
  *   id: String,
  *   node_id: String,
  *   url: String,
  *   name: String,
  *   color: String,
  *   default: Boolean
- *  }],
+ *  }} Label
+ */
+
+/**
+ * @typedef {{
+ *  url: String,
+ *  repository_url: String,
+ *  labels_url: String,
+ *  comments_url: String,
+ *  events_url: String,
+ *  html_url: String,
+ *  id: String,
+ *  node_id: String,
+ *  number: Number,
+ *  title: String,
+ *  user: User,
+ *  labels: [Label],
  *  state: String,
  *  locked: Boolean,
  *  assignee: String,
@@ -74,3 +82,4 @@
  *  body: String
  * }} Issue
  */
+

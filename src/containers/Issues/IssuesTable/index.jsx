@@ -74,6 +74,15 @@ export default class IssuesTable extends Component {
               />
             ))
           }
+          {
+            sortedIssues.length === 0 && (
+              <Table.Row>
+                <Table.Cell colSpan={columns.length} textAlign="center">
+                  No data available
+                </Table.Cell>
+              </Table.Row>
+            )
+          }
         </Table.Body>
 
       </Table>

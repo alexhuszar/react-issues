@@ -21,7 +21,6 @@ export default class LabelCell extends Component {
 
     const { label } = this.props;
     const { color, name } = label;
-    debugger;
 
     return (
       <div
