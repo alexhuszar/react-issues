@@ -7,7 +7,7 @@ import { Table } from 'semantic-ui-react'
 import HeaderCell from './HeaderCell';
 import TableRow from './TableRow';
 
-// import styles from './index.css'
+import './index.css'
 
 import columns from 'scripts/list/issue-table-columns'
 import { ASCENDING } from 'constants/sort-by'
@@ -48,44 +48,45 @@ export default class IssuesTable extends Component {
     );
 
     return (
-      <Table sortable>
-        <Table.Header>
-          <Table.Row>
+      <div className="issues-table">
+        <Table sortable >
+          <Table.Header>
+            <Table.Row>
+              {
+                (columns || []).map((column) => (
+                  <HeaderCell
+                    key={`header_${column.name}`}
+                    column={column}
+                    sortBy={sortBy}
+                    onSort={this.handleSort}
+                  />
+                ))
+              }
+            </Table.Row>
+          </Table.Header>
+
+          <Table.Body>
             {
-              (columns || []).map((column) => (
-                <HeaderCell
-                  key={`header_${column.name}`}
-                  column={column}
-                  sortBy={sortBy}
-                  onSort={this.handleSort}
+              (sortedIssues || []).map((issue) => (
+                <TableRow
+                  key={`issue_${issue.id}`}
+                  issue={issue}
+                  columns={columns}
                 />
               ))
             }
-          </Table.Row>
-        </Table.Header>
-
-        <Table.Body>
-          {
-            (sortedIssues || []).map((issue) => (
-              <TableRow
-                key={`issue_${issue.id}`}
-                issue={issue}
-                columns={columns}
-              />
-            ))
-          }
-          {
-            sortedIssues.length === 0 && (
-              <Table.Row>
-                <Table.Cell colSpan={columns.length} textAlign="center">
-                  No data available
-                </Table.Cell>
-              </Table.Row>
-            )
-          }
-        </Table.Body>
-
-      </Table>
+            {
+              sortedIssues.length === 0 && (
+                <Table.Row>
+                  <Table.Cell colSpan={columns.length} textAlign="center">
+                    No data available
+                  </Table.Cell>
+                </Table.Row>
+              )
+            }
+          </Table.Body>
+        </Table>
+      </div>
     )
   }
 

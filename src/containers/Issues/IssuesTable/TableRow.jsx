@@ -1,12 +1,12 @@
 /**
  * Created by Alexandru Huszar on 8/24/2018.
  */
-import React, {Component, PropTypes} from 'lib'
+import React, {Component, PropTypes} from 'lib/index'
 import { Table } from 'semantic-ui-react';
 
-import LabelCell from './LabelCell';
+import Label from 'components/Label';
 
-import './index.css'
+import './TableRow.css'
 
 import { NUMBER, DATE, LABEL } from 'constants/value-types'
 
@@ -36,7 +36,7 @@ const formatValue = (issue, type, key) => {
         <Table.Cell key={`cell_${key}`}>
           {
             (issue[key] || []).map((label) =>
-              <LabelCell label={label} key={label.id}/>
+              <Label label={label} key={label.id}/>
             )
           }
         </Table.Cell>
@@ -52,9 +52,9 @@ const formatValue = (issue, type, key) => {
 };
 
 /**
- * Index
+ * TableRow
  */
-export default class Index extends Component {
+export default class TableRow extends Component {
 
   static propTypes = {
     columns: PropTypes.arrayOf(

@@ -6,9 +6,10 @@ import { Loader, Header } from 'semantic-ui-react'
 
 import ErrorBounding from 'components/ErrorBounding';
 import GenericError from  'components/GenericError'
+import SearchInput from  'components/SearchInput'
 
 import IssuesTable from './IssuesTable'
-import IssuesFilter from './IssuesFilter'
+import CreateIssue from './CreateIssue';
 
 import './index.css'
 
@@ -23,10 +24,9 @@ import filterBySearch from 'lib/filter-by-search'
  */
 const getLabelsName = (labels) => {
   let labelsStr = '';
-  (labels || []).map((label) => {
+  (labels || []).forEach((label) => {
     labelsStr += ` ${label.name}`
   });
-  console.log(labelsStr)
   return labelsStr;
 };
 
@@ -60,11 +60,19 @@ export default class Issues extends Component {
     this.setState({loading: true});
       fetchIssues()
       .then((response) => this.setState({
-          // only save needed attributes
+          // only save needed attributes in state
           issues: response.map((issue) => {
             const labelNames = getLabelsName(issue.labels);
             return {
-              ...issue,
+              title: issue.title,
+              state: issue.state,
+              labels: issue.labels.map(({name, id, color}) =>
+                ({id, name, color})
+              ),
+              created_at: issue.created_at,
+              updated_at: issue.updated_at,
+              number: issue.number,
+              id: issue.id,
               searchValues: `${issue.title} ${labelNames} ${issue.state}`
             }
           })
@@ -90,19 +98,23 @@ export default class Issues extends Component {
       : issues;
 
     return (
-      <div className="issues-wrap">
+      <div>
         <Loader active={loading} />
         <GenericError error={error} onDismiss={this.handleDismiss} />
 
         <Header as='h3' dividing>
           React issues
-          <ErrorBounding >
-            <IssuesFilter
-              searchText={searchText}
-              onSearchChange={this.handleSearch}
-            />
-          </ErrorBounding>
         </Header>
+
+        <ErrorBounding >
+          <div  className="issues-filter-wrap">
+            <SearchInput
+              value={searchText}
+              onChange={this.handleSearch}
+            />
+            <CreateIssue onCreate={this.handleAddIssue}/>
+          </div>
+        </ErrorBounding>
 
         <ErrorBounding>
           <IssuesTable issues={filteredIssues} />
@@ -125,6 +137,17 @@ export default class Issues extends Component {
   handleSearch(value){
     this.setState({
       searchText : value
+    })
+  }
+
+  /**
+   * Handle create Issue
+   * @param {Issue} issue
+   */
+  handleAddIssue(issue){
+    const { issues = []} = this.state;
+    this.setState({
+      issues: [...issues, issue]
     })
   }
 
